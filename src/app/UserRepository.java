@@ -17,29 +17,21 @@ public class UserRepository {
 
 
     public Optional<User> findUserById(int id) {
-        Optional<User> userOpt = users.stream()
+        return users.stream()
                 .filter(u -> u.getId() == id)
                 .findFirst();
-
-        userOpt.ifPresentOrElse(System.out::println, () -> System.out.println("Id not found."));
-        return userOpt;
     }
 
     public Optional<User> findUserByEmail(String email) {
-        Optional<User> userOpt = users.stream()
+        return users.stream()
                 .filter(u -> Objects.equals(u.getEmail(), email))
                 .findFirst();
-
-        userOpt.ifPresentOrElse(System.out::println, () -> System.out.println("E-Mail not found."));
-        return userOpt;
     }
 
     public Optional<List<User>> findAllUsers() {
         if (users.isEmpty()) {
-            System.out.println("No users found.");
             return Optional.empty();
         } else {
-            System.out.println("The amount of users is: " + users.size());
             return Optional.of(users);
         }
     }
@@ -49,11 +41,25 @@ public class UserRepository {
         List<User> users = new ArrayList<>();
         users.add(new User(1, "Alice", "alice@gmail.com"));
         UserRepository ur = new UserRepository(users);
-        ur.findUserById(1);
-        ur.findUserByEmail("alice@gmail.com");
-        ur.findUserByEmail("ERROR");
-        ur.findAllUsers();
+        ur.findUserById(1).ifPresentOrElse(
+                System.out::println,
+                () -> System.out.println("User not found by ID")
+        );
 
+        ur.findUserByEmail("alice@gmail.com").ifPresentOrElse(
+                System.out::println,
+                () -> System.out.println("User not found by email")
+        );
+
+        ur.findUserByEmail("ERROR").ifPresentOrElse(
+                System.out::println,
+                () -> System.out.println("User not found by email")
+        );
+
+        ur.findAllUsers().ifPresentOrElse(
+                list -> list.forEach(System.out::println),
+                () -> System.out.println("No users found")
+        );
     }
 
 
